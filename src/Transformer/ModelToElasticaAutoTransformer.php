@@ -14,7 +14,6 @@ namespace FOS\ElasticaBundle\Transformer;
 use Elastica\Document;
 use FOS\ElasticaBundle\Event\TransformEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -26,7 +25,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterface
 {
     /**
-     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
+     * @var LegacyEventDispatcherInterface
      */
     protected $dispatcher;
 
@@ -51,9 +50,9 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
      * Instanciates a new Mapper.
      *
      * @param array                                                   $options
-     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $dispatcher
+     * @param LegacyEventDispatcherInterface $dispatcher
      */
-    public function __construct(array $options = [], /* EventDispatcherInterface */ $dispatcher = null)
+    public function __construct(array $options = [], $dispatcher = null)
     {
         $this->options = array_merge($this->options, $options);
         $this->dispatcher = $dispatcher;
@@ -220,12 +219,6 @@ class ModelToElasticaAutoTransformer implements ModelToElasticaTransformerInterf
 
     private function dispatch($event, $eventName): void
     {
-        if ($this->dispatcher instanceof EventDispatcherInterface) {
-            // Symfony >= 4.3
-            $this->dispatcher->dispatch($event, $eventName);
-        } else {
-            // Symfony 3.4
-            $this->dispatcher->dispatch($eventName, $event);
-        }
+        $this->dispatcher->dispatch($eventName, $event);
     }
 }

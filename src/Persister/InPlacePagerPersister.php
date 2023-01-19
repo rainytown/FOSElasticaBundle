@@ -12,7 +12,6 @@ use FOS\ElasticaBundle\Persister\Event\PrePersistEvent;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class InPlacePagerPersister implements PagerPersisterInterface
 {
@@ -24,13 +23,13 @@ final class InPlacePagerPersister implements PagerPersisterInterface
     private $registry;
     
     /**
-     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
+     * @var LegacyEventDispatcherInterface
      */
     private $dispatcher;
 
     /**
      * @param PersisterRegistry $registry
-     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $dispatcher
+     * @param LegacyEventDispatcherInterface $dispatcher
      */
     public function __construct(PersisterRegistry $registry, $dispatcher)
     {
@@ -133,12 +132,6 @@ final class InPlacePagerPersister implements PagerPersisterInterface
 
     private function dispatch($event, $eventName): void
     {
-        if ($this->dispatcher instanceof EventDispatcherInterface) {
-            // Symfony >= 4.3
-            $this->dispatcher->dispatch($event, $eventName);
-        } else {
-            // Symfony 3.4
-            $this->dispatcher->dispatch($eventName, $event);
-        }
+        $this->dispatcher->dispatch($eventName, $event);
     }
 }

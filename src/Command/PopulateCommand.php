@@ -33,7 +33,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Populate the search index.
@@ -43,7 +42,7 @@ class PopulateCommand extends Command
     protected static $defaultName = 'fos:elastica:populate';
 
     /**
-     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
+     * @var LegacyEventDispatcherInterface
      */
     private $dispatcher;
 
@@ -287,12 +286,6 @@ class PopulateCommand extends Command
 
     private function dispatch($event, $eventName): void
     {
-        if ($this->dispatcher instanceof EventDispatcherInterface) {
-            // Symfony >= 4.3
-            $this->dispatcher->dispatch($event, $eventName);
-        } else {
-            // Symfony 3.4
-            $this->dispatcher->dispatch($eventName, $event);
-        }
+        $this->dispatcher->dispatch($eventName, $event);
     }
 }

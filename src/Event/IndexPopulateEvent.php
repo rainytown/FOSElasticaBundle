@@ -12,188 +12,90 @@
 namespace FOS\ElasticaBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event as LegacyEvent;
-use Symfony\Contracts\EventDispatcher\Event;
 
-if (!class_exists(Event::class)) {
+/**
+ * Index Populate Event.
+ *
+ * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
+ */
+class IndexPopulateEvent extends IndexEvent
+{
     /**
-     * Symfony 3.4
+     * @LegacyEvent("FOS\ElasticaBundle\Event\IndexPopulateEvent")
      */
+    const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
+    /**
+     * @LegacyEvent("FOS\ElasticaBundle\Event\IndexPopulateEvent")
+     */
+    const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
+    /**
+     * @var bool
+     */
+    private $reset;
+    /**
+     * @var array
+     */
+    private $options;
 
     /**
-     * Index Populate Event.
-     *
-     * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
+     * @param string $index
+     * @param bool   $reset
+     * @param array  $options
      */
-    class IndexPopulateEvent extends IndexEvent
+    public function __construct($index, $reset, $options)
     {
-        /**
-         * @LegacyEvent("FOS\ElasticaBundle\Event\IndexPopulateEvent")
-         */
-        const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
-        /**
-         * @LegacyEvent("FOS\ElasticaBundle\Event\IndexPopulateEvent")
-         */
-        const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
-        /**
-         * @var bool
-         */
-        private $reset;
-        /**
-         * @var array
-         */
-        private $options;
+        parent::__construct($index);
 
-        /**
-         * @param string $index
-         * @param bool   $reset
-         * @param array  $options
-         */
-        public function __construct($index, $reset, $options)
-        {
-            parent::__construct($index);
-
-            $this->reset = $reset;
-            $this->options = $options;
-        }
-
-        /**
-         * @return bool
-         */
-        public function isReset()
-        {
-            return $this->reset;
-        }
-
-        /**
-         * @return array
-         */
-        public function getOptions()
-        {
-            return $this->options;
-        }
-
-        /**
-         * @param bool $reset
-         */
-        public function setReset($reset)
-        {
-            $this->reset = $reset;
-        }
-
-        /**
-         * @param string $name
-         *
-         * @return mixed
-         *
-         * @throws \InvalidArgumentException if option does not exist
-         */
-        public function getOption($name)
-        {
-            if (!isset($this->options[$name])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" option does not exist.', $name));
-            }
-
-            return $this->options[$name];
-        }
-
-        /**
-         * @param string $name
-         * @param mixed  $value
-         */
-        public function setOption($name, $value)
-        {
-            $this->options[$name] = $value;
-        }
+        $this->reset = $reset;
+        $this->options = $options;
     }
-} else {
-    /**
-     * Symfony >= 4.3
-     */
 
     /**
-     * Index Populate Event.
-     *
-     * @author Oleg Andreyev <oleg.andreyev@intexsys.lv>
+     * @return bool
      */
-    class IndexPopulateEvent extends IndexEvent
+    public function isReset()
     {
-        /**
-         * @Event("FOS\ElasticaBundle\Event\IndexPopulateEvent")
-         */
-        const PRE_INDEX_POPULATE = 'elastica.index.index_pre_populate';
-        /**
-         * @Event("FOS\ElasticaBundle\Event\IndexPopulateEvent")
-         */
-        const POST_INDEX_POPULATE = 'elastica.index.index_post_populate';
-        /**
-         * @var bool
-         */
-        private $reset;
-        /**
-         * @var array
-         */
-        private $options;
+        return $this->reset;
+    }
 
-        /**
-         * @param string $index
-         * @param bool   $reset
-         * @param array  $options
-         */
-        public function __construct($index, $reset, $options)
-        {
-            parent::__construct($index);
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
 
-            $this->reset = $reset;
-            $this->options = $options;
+    /**
+     * @param bool $reset
+     */
+    public function setReset($reset)
+    {
+        $this->reset = $reset;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException if option does not exist
+     */
+    public function getOption($name)
+    {
+        if (!isset($this->options[$name])) {
+            throw new \InvalidArgumentException(sprintf('The "%s" option does not exist.', $name));
         }
 
-        /**
-         * @return bool
-         */
-        public function isReset()
-        {
-            return $this->reset;
-        }
+        return $this->options[$name];
+    }
 
-        /**
-         * @return array
-         */
-        public function getOptions()
-        {
-            return $this->options;
-        }
-
-        /**
-         * @param bool $reset
-         */
-        public function setReset($reset)
-        {
-            $this->reset = $reset;
-        }
-
-        /**
-         * @param string $name
-         *
-         * @return mixed
-         *
-         * @throws \InvalidArgumentException if option does not exist
-         */
-        public function getOption($name)
-        {
-            if (!isset($this->options[$name])) {
-                throw new \InvalidArgumentException(sprintf('The "%s" option does not exist.', $name));
-            }
-
-            return $this->options[$name];
-        }
-
-        /**
-         * @param string $name
-         * @param mixed  $value
-         */
-        public function setOption($name, $value)
-        {
-            $this->options[$name] = $value;
-        }
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function setOption($name, $value)
+    {
+        $this->options[$name] = $value;
     }
 }

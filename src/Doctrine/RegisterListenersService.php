@@ -19,19 +19,18 @@ use FOS\ElasticaBundle\Persister\Event\PersistEvent;
 use FOS\ElasticaBundle\Provider\PagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class RegisterListenersService
 {
     /**
-     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
+     * @var LegacyEventDispatcherInterface
      */
     private $dispatcher;
 
     /**
-     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $dispatcher
+     * @param LegacyEventDispatcherInterface $dispatcher
      */
-    public function __construct(/* EventDispatcherInterface */ $dispatcher)
+    public function __construct($dispatcher)
     {
         $this->dispatcher = $dispatcher;
 

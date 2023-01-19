@@ -19,7 +19,6 @@ use FOS\ElasticaBundle\Event\IndexResetEvent;
 use FOS\ElasticaBundle\Event\TypeResetEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface as LegacyEventDispatcherInterface;
 use Symfony\Component\EventDispatcher\LegacyEventDispatcherProxy;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Deletes and recreates indexes.
@@ -37,7 +36,7 @@ class Resetter implements ResetterInterface
     private $configManager;
 
     /**
-     * @var EventDispatcherInterface|LegacyEventDispatcherInterface
+     * @var LegacyEventDispatcherInterface
      */
     private $dispatcher;
 
@@ -56,7 +55,7 @@ class Resetter implements ResetterInterface
      * @param IndexManager                                            $indexManager
      * @param AliasProcessor                                          $aliasProcessor
      * @param MappingBuilder                                          $mappingBuilder
-     * @param EventDispatcherInterface|LegacyEventDispatcherInterface $eventDispatcher
+     * @param LegacyEventDispatcherInterface                          $eventDispatcher
      * @param Client                                                  $client
      */
     public function __construct(
@@ -64,7 +63,7 @@ class Resetter implements ResetterInterface
         IndexManager $indexManager,
         AliasProcessor $aliasProcessor,
         MappingBuilder $mappingBuilder,
-        /* EventDispatcherInterface */ $eventDispatcher
+        $eventDispatcher
     ) {
         $this->aliasProcessor = $aliasProcessor;
         $this->configManager = $configManager;
@@ -186,12 +185,6 @@ class Resetter implements ResetterInterface
 
     private function dispatch($event, $eventName): void
     {
-        if ($this->dispatcher instanceof EventDispatcherInterface) {
-            // Symfony >= 4.3
-            $this->dispatcher->dispatch($event, $eventName);
-        } else {
-            // Symfony 3.4
-            $this->dispatcher->dispatch($eventName, $event);
-        }
+        $this->dispatcher->dispatch($eventName, $event);
     }
 }
